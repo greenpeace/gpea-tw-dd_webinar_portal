@@ -51,7 +51,7 @@ function regResult(curr_ind, sessionSize) {
 function submitPage(formData, checkedSessions, curr_ind) {
   formData.set('CampaignId', checkedSessions[curr_ind].value);
    
-  fetch(endpoint, {
+  return fetch(endpoint, {
     method: 'POST',
     body: formData
   })
