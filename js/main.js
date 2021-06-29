@@ -17,7 +17,7 @@ function regResult(curr_ind, sessionSize) {
   // console.log("regResult - curr_ind:", curr_ind);
   // console.log("regResult - sessionSize:", sessionSize);
   if (curr_ind === sessionSize) {                      
-    let result_str = "";
+    let result_str = "";    
     
     if (successful_list.length > 0) {                
       successful_list.sort();
@@ -48,10 +48,10 @@ function regResult(curr_ind, sessionSize) {
 /**
  *  Submit one session at a time
  */
-function submitPage(formData, checkedSessions, curr_ind) {
-  formData.set('CampaignId', checkedSessions[curr_ind].value);
-   
-  fetch(endpoint, {
+function submitPage(formData, checkedSessions, labelSessions, curr_ind) {
+  formData.set('CampaignId', checkedSessions[curr_ind].value);  
+
+  return fetch(endpoint, {
     method: 'POST',
     body: formData
   })
@@ -69,8 +69,8 @@ function submitPage(formData, checkedSessions, curr_ind) {
         // });3
 
         let sessionSize = document.querySelectorAll('input[name="sessions[]"]:checked').length - 1;             
-        successful_list.push(document.getElementById(`label-session${curr_ind}`).innerText);                    
-        regResult(curr_ind, sessionSize);        
+        successful_list.push(document.getElementById(`label-session${labelSessions[curr_ind]}`).innerText);                    
+        regResult(curr_ind, sessionSize);
       }
     }
     //hideFullPageLoading();    
@@ -88,14 +88,15 @@ function submitPage(formData, checkedSessions, curr_ind) {
  * 
  * @param {*} formData: collection of form fileds
  * @param {*} checkedSessions: collection of user checked sessions 
+ * @param {*} labelSessions: collection of checkedSessions indexes
  * @param {*} curr_ind: current index of checkedSessions
  * @returns 
  */
  
-function runSerial(formData, checkedSessions, curr_ind) {
+function runSerial(formData, checkedSessions, labelSessions, curr_ind) {
   var result = Promise.resolve();  
   checkedSessions.forEach(checkedSession => {        
-    result = result.then(() => submitPage(formData, checkedSessions, curr_ind++));
+    result = result.then(() => submitPage(formData, checkedSessions, labelSessions, curr_ind++));
   });
   return result;
 }
@@ -241,9 +242,14 @@ const formValidate = () => {
       var formData = collectFormValues();              
       //console.log(formData);
       //var hasFailed = false
-      let checkedSessions = document.querySelectorAll('input[name="sessions[]"]:checked');      
-    
-      runSerial(formData, checkedSessions, 0);            
+      let checkedSessions = document.querySelectorAll('input[name="sessions[]"]:checked');            
+      let sessionLabels = [];
+
+      document.querySelectorAll('input[name="sessions[]"]:checked').forEach(function(el, index) {        
+        sessionLabels.push(el.id.substr(el.id.indexOf('session') + 7));
+      });    
+      
+      runSerial(formData, checkedSessions, sessionLabels, 0);            
     }
   });
 }
@@ -508,9 +514,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
           if (numRes >= targetSignups) {
             events[idx]["Event Display Name"] += "（已額滿）";// += `(${numRes.toLocaleString()}/${targetSignups.toLocaleString()} 已額滿)`
             events[idx]["is-full"] = true;
-          } else {
-            events[idx]["Event Display Name"];// += `(${numRes.toLocaleString()}/${targetSignups.toLocaleString()})`
-          }          
+          }
+          // } else {
+          //   events[idx]["Event Display Name"];// += `(${numRes.toLocaleString()}/${targetSignups.toLocaleString()})`
+          // }          
         }
       });
       populateEventSelections(events) // update the display names
