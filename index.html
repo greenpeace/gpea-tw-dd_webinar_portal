@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>｜綠色和平</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,65 +13,130 @@
   <meta property="og:image" content="">
 
   <link rel="manifest" href="site.webmanifest">
-  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <!-- Place favicon.ico in the root directory -->
 
   <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/main.css?v=1">
 
   <meta name="theme-color" content="#fafafa">
 </head>
 
-<body>
+<body>  
+  <div class="wrapper">
+    <header>
+      <a href="http://www.greenpeace.org/taiwan/?ref=dd_webinar" title="Greenpeace" class="logo">
+        <span class="visuallyhidden">Greenpeace</span>
+      </a>
+    </header>
+    <main>
+      <div class="img-div">
 
-  <form method="post" action="" class="" id="mc-form">
-    <div class="">
-      <label>FirstName <input name="FirstName" type="text" value=""> </label>
-      <br>
-      <label>LastName <input name="LastName" type="text" value=""> </label>
-      <br>
-      <label>Email <input name="Email" type="email" value=""> </label>
-      <br>
-      <label>MobilePhone <input name="MobilePhone" type="tel" value=""> </label>
-      <br>
-      <label>BirthDate <input name="Birthdate" type="date" value=""> </label>
-      <br>
+      </div>
+      <div class="form-div">        
+        <h2 class="title"></h2>
+        <p class="content-top"></p>
 
-      <label>平日方便聯繫時段</label> <br>
+        <form method="post" action="" class="" id="mc-form">  
+          <div class="form__name">
+            <div class="form__LastName">
+              <label class="form__label">姓氏<span>*</span></label>
+              <input id="LastName" name="LastName" type="text" class="form__input" placeholder="姓氏" required>
+            </div>
+      
+            <div class="form__FirstName">
+              <label class="form__label">名字<span>*</span></label>
+              <input id="FirstName" name="FirstName" type="text" class="form__input" placeholder="名字" required>
+            </div>
+          </div>          
+                    
+          <div>
+            <label class="form__label">電子信箱<span>*</span></label>
+            <input id="Email" name="Email" type="email" class="form__input email" placeholder="電子信箱"  required>
+          </div>
 
-      <label><input name="AvailableTimeslot" type="checkbox" value="0900-1200"> 早上 0900-1200 </label><br>
-      <label><input name="AvailableTimeslot" type="checkbox" value="1200-1400"> 中午 1200-1400 </label><br>
-      <label><input name="AvailableTimeslot" type="checkbox" value="1400-1800"> 下午 1400-1800 </label><br>
+          <div>
+            <label class="form__label">性別<span>*</span></label>
+            <input type="radio" id="gender__male" name="gender" value="male" checked required><label for="gender__male" class="gender__label">男</label>
+            <input type="radio" id="gender__female" name="gender" value="female" required><label for="gender__female" class="gender__label">女</label>
+            <input type="radio" id="gender__other" name="gender" value="other" required><label for="gender__other" class="gender__label">其他</label>
+          </div>
 
-      <label><input name="OptIn" type="checkbox" value=""> 我同意綠色和平按照收集個人資料聲明的方式與我聯絡並清楚明白綠色和平隱私保護政策。)</label>
-      <br>
+          <div>
+            <label class="form__label">電話<span>*</span></label>
+            <input id="MobilePhone" name="MobilePhone" class="form__input taiwan-phone" type="text" placeholder="電話" required>
+          </div>
+    
+          <div>
+            <label class="form__label">出生年份<span>*</span></label>
+            <select id="Birthdate" name="Birthdate" class="form__input" required>
+              <option value="">出生年份</option>
+            </select>		
+          </div>
 
-      <input type="hidden" name="req" value="post_data">
+          <div>
+            <label class="form__label webinar__label">您的報名場次（可複選）<span>*</span></label>
+            <div class="webinar-error error"></div>
+            <div class="webinar-sessions">              
+            </div>
+          </div>
+                    
+          <div class="form__OptIn">
+            <input id="OptIn" name="OptIn" type="checkbox" checked />
+            <label for="OptIn">
+              我願意收到綠色和平發送的電子通訊，掌握環保工作的最新消息！我並同意綠色和平按照其
+              <a href="https://www.greenpeace.org/taiwan/policies/privacy-and-cookies/?ref=dd_webinar"
+                title="個人隱私政策" target="_blank">個人隱私政策</a>
+              與我保持聯絡。
+            </label>
+          </div>
+          
+          <input placeholder="MobileCountryCode" name="MobileCountryCode" type="hidden" value="886">
+          <input type="hidden" name="req" value="post_data">
+          <input type="hidden" name="LeadSource" value="Direct Dialogue Webinar">
+          <!-- <input type="hidden" name="CampaignId" value="7012u000000P4pYAAS" title="Comms - Direct Dialogue Followup - HK"> -->
+          <!-- <input type="hidden" name="CampaignId" value="7012u000000P4pNAAS" title="Comms - Direct Dialogue Followup - TW"> -->
 
-      <!-- <input type="hidden" name="CampaignId" value="7012u000000P4pYAAS" title="Comms - Direct Dialogue Followup - HK"> -->
-      <input type="hidden" name="CampaignId" value="7012u000000P4pNAAS" title="Comms - Direct Dialogue Followup - TW">
-
-      <!-- <input type="hidden" name="Company" value="null"> -->
-
-    </div>
-  </form>
-
-
-  <div>
-    <button class="send-fetch-form-btn">Send FETCH FORM request</button>
+          <div>
+            <button id="submit_btn" class="send-fetch-form-btn" type="submit">立刻報名</button>          
+          </div>          
+        </form> 
+        
+        <p class="content-bottom"></p>
+      </div> 
+      <div class="thank-you-div">
+        <h2 class="title"></h2>
+        <p class="content"></p>
+      </div>   
+    </main>	
+    <footer>
+        <div class="footer__up">
+          <div class="footer__info">
+            <div class="footer__logo"><a herf="http://www.greenpeace.org/taiwan/?ref=dd_webinar"><img src="https://change.greenpeace.org.tw/others/gp-logo-white-2019.png?v=1" alt="綠色和平"></a></div>
+            <p>綠色和平存在，因為脆弱的地球需要改變、需要行動。<br />
+            但保護地球的使命不能僅靠綠色和平來完成，唯有結合你的力量，才能夠讓地球變得更綠色、更和平。</p>          
+          </div>
+          <div class="footer__menu">
+            <ul>
+              <!--<li><a href="http://www.greenpeace.org/taiwan/?ref=dd_webinar" target="_blank">主頁</a></li>
+              <li><a href="https://supporter.ea.greenpeace.org/tw/s/donate?ref=dd_webinar" target="_blank">捐助支持</a></li>	-->
+              <li><a href="https://www.greenpeace.org/taiwan/policies/privacy-and-cookies/?ref=dd_webinar" target="_blank">私隱政策與個人資料收集聲明</a></li>
+            </ul>		
+          </div>
+        </div>
+        <div class="footer__copyright">			
+          <span>© <script>document.write(new Date().getFullYear());</script></span>
+          <strong class="logo">GREENPEACE</strong>
+        </div>                      
+    </footer>  
   </div>
-
-  <!-- Add your site or application content here -->
   <script src="js/vendor/modernizr-3.11.2.min.js"></script>
   <script src="js/plugins.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=1"></script>
 
-  <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
-  <script>
-    window.ga = function () { ga.q.push(arguments) }; ga.q = []; ga.l = +new Date;
-    ga('create', 'UA-XXXXX-Y', 'auto'); ga('set', 'anonymizeIp', true); ga('set', 'transport', 'beacon'); ga('send', 'pageview')
-  </script>
-  <script src="https://www.google-analytics.com/analytics.js" async></script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-WRM6WK6');</script>
+  <!-- End Google Tag Manager -->
 </body>
 
 </html>
