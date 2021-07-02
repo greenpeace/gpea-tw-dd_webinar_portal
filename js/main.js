@@ -3,6 +3,7 @@ $ = window.$ = window.jQuery = jquery;
 
 //var endpoint = 'https://cors-anywhere.small-service.gpeastasia.org/https://cloud.greentw.greenpeace.org/websign-dummy';
 var endpoint = 'https://cloud.greentw.greenpeace.org/websign';
+var appScriptUrl = 'https://script.google.com/macros/s/AKfycby4PkwOUrOnd518wsRygcNFGWjLAsdtHavBx1YhmmN9Q417V_tcz6CZPMPW4SBAEhHN/exec';
 var successful_list = [];
 var failed_list = [];
 
@@ -49,7 +50,10 @@ function regResult(curr_ind, sessionSize) {
  *  Submit one session at a time
  */
 function submitPage(formData, checkedSessions, labelSessions, curr_ind) {
-  formData.set('CampaignId', checkedSessions[curr_ind].value);  
+  formData.set('CampaignId', checkedSessions[curr_ind].value);
+  formData.set('EndDate', document.querySelector(`#endDate${labelSessions[curr_ind]}`).value);  
+  formData.set('Session', document.querySelector(`#label-session${labelSessions[curr_ind]}`).innerText);    
+  console.log(document.querySelector(`#label-session${labelSessions[curr_ind]}`).innerText);
 
   return fetch(endpoint, {
     method: 'POST',
@@ -71,6 +75,11 @@ function submitPage(formData, checkedSessions, labelSessions, curr_ind) {
         let sessionSize = document.querySelectorAll('input[name="sessions[]"]:checked').length - 1;             
         successful_list.push(document.getElementById(`label-session${labelSessions[curr_ind]}`).innerText);                    
         regResult(curr_ind, sessionSize);
+
+        fetch(appScriptUrl, {
+          method: 'POST',
+          body: formData
+        });
       }
     }
     //hideFullPageLoading();    
@@ -243,13 +252,15 @@ const formValidate = () => {
       //console.log(formData);
       //var hasFailed = false
       let checkedSessions = document.querySelectorAll('input[name="sessions[]"]:checked');            
-      let sessionLabels = [];
+      let labelSessions = [];
+      //let endDates = [];
 
       document.querySelectorAll('input[name="sessions[]"]:checked').forEach(function(el, index) {        
-        sessionLabels.push(el.id.substr(el.id.indexOf('session') + 7));
+        labelSessions.push(el.id.substr(el.id.indexOf('session') + 7));
+        //endDates.push(document.querySelector(`#endDate${index}`).value);
       });    
       
-      runSerial(formData, checkedSessions, sessionLabels, 0);            
+      runSerial(formData, checkedSessions, labelSessions, 0);            
     }
   });
 }
@@ -399,12 +410,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     // populate the events to the select element
     events.forEach((row, k) => {
-      //console.log("Populate", row["Event Display Name"], row["CampaignId"]);
+      //console.log("Populate", row["Event Display Name"], row["Session"], row["CampaignId"]);
       //selectDOM.options[k] = new Option(row["Event Display Name"], row["CampaignId"]);       
       
       // creating div as container
       let containerDiv = document.createElement('div');      
       containerDiv.className = "form__session";
+
+      // creating hidden input for EndDate
+      let endDate = document.createElement('input');
+      endDate.type = "hidden";
+      endDate.id = `endDate${k}`;
+      endDate.value = row["From DateTime"].substr(0, 10).replace(/\//g, "-");
 
       // creating checkbox element
       let checkbox = document.createElement('input');
@@ -430,6 +447,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       // appending the checkbox and label to div
       containerDiv.appendChild(checkbox);
       containerDiv.appendChild(label);
+      containerDiv.appendChild(endDate);
 
       sessionDOM.appendChild(containerDiv);
 
@@ -459,7 +477,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         //console.log(currentline[0]);
 
         if (currentline[0].toLowerCase().indexOf("image") >= 0) {          
-          document.getElementsByClassName("img-div")[0].style.backgroundImage = `url(${currentline[1].trim()})`;
+          //document.getElementsByClassName("img-div")[0].style.backgroundImage = `url(${currentline[1].trim()})`;
+          document.getElementsByClassName("img-div")[0].innerHTML = `<img src='${currentline[1].trim()}' style='width:100%;' />`;
         } else if (currentline[0].toLowerCase().indexOf("title") >= 0) { 
           document.title = currentline[1].trim() + "｜綠色和平";
           document.getElementsByClassName("title")[0].innerHTML = currentline[1].trim();
