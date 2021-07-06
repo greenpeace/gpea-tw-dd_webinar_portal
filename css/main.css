@@ -216,12 +216,27 @@
     padding: 15px 0;
   }  
  
+  .form__session {
+    margin: 0;
+    padding: 5px 5px 0 5px;
+  }
+
   .form__session label {
-    margin: 0 0 0 10px;
+    margin: 0 0 0 10px; 
+  }
+  .form__session label::after{
+    content: "\A";
+	  white-space: pre;
   }
 
   .form__session .session-is-full {
     color: gray;
+  }
+
+  .form__topic {
+    margin: 0;
+    padding: 5px 5px 0 5px;
+    font-weight: bolder;
   }
 
   .gender__label {

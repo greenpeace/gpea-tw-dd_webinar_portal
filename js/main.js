@@ -3,6 +3,7 @@ $ = window.$ = window.jQuery = jquery;
 
 //var endpoint = 'https://cors-anywhere.small-service.gpeastasia.org/https://cloud.greentw.greenpeace.org/websign-dummy';
 var endpoint = 'https://cloud.greentw.greenpeace.org/websign';
+//var appScriptUrl = 'https://script.google.com/macros/s/AKfycbyOY2L8U8fAlFzCpKJgrB2Soez5FPIvUiTAEjwLT9py6cMtnoUU_x5KXAm7lhq46gPs/exec';//dummy
 var appScriptUrl = 'https://script.google.com/macros/s/AKfycby4PkwOUrOnd518wsRygcNFGWjLAsdtHavBx1YhmmN9Q417V_tcz6CZPMPW4SBAEhHN/exec';
 var successful_list = [];
 var failed_list = [];
@@ -24,7 +25,7 @@ function regResult(curr_ind, sessionSize) {
       successful_list.sort();
       result_str = "<p>您成功報名了：</p>";
       successful_list.forEach(item => {
-        result_str += item + "<br>";                          
+        result_str += "<li>" + item + "</li>";
       });
     }
 
@@ -52,8 +53,8 @@ function regResult(curr_ind, sessionSize) {
 function submitPage(formData, checkedSessions, labelSessions, curr_ind) {
   formData.set('CampaignId', checkedSessions[curr_ind].value);
   formData.set('EndDate', document.querySelector(`#endDate${labelSessions[curr_ind]}`).value);  
-  formData.set('Session', document.querySelector(`#label-session${labelSessions[curr_ind]}`).innerText);    
-  console.log(document.querySelector(`#label-session${labelSessions[curr_ind]}`).innerText);
+  formData.set('Session', document.querySelector(`#fullName-session${labelSessions[curr_ind]}`).value);    
+  console.log(document.querySelector(`#fullName-session${labelSessions[curr_ind]}`).value);
 
   return fetch(endpoint, {
     method: 'POST',
@@ -73,7 +74,7 @@ function submitPage(formData, checkedSessions, labelSessions, curr_ind) {
         // });3
 
         let sessionSize = document.querySelectorAll('input[name="sessions[]"]:checked').length - 1;             
-        successful_list.push(document.getElementById(`label-session${labelSessions[curr_ind]}`).innerText);                    
+        successful_list.push(document.getElementById(`fullName-session${labelSessions[curr_ind]}`).value);                    
         regResult(curr_ind, sessionSize);
 
         fetch(appScriptUrl, {
@@ -88,7 +89,7 @@ function submitPage(formData, checkedSessions, labelSessions, curr_ind) {
     console.log("fetch error");
     console.error(error);
     
-    failed_list.push(document.getElementById(`label-session${index}`).innerText);    
+    failed_list.push(document.getElementById(`fullName-session${index}`).value);    
     regResult(curr_ind, sessionSize);    
   })
 }
@@ -245,7 +246,6 @@ const formValidate = () => {
 		    }
 		},
     submitHandler: function() {
-      //console.log('submitHandler');
       showFullPageLoading();
 
       var formData = collectFormValues();              
@@ -408,15 +408,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     sessionDOM.innerHTML = ''; // clear loading content    
 
-    // populate the events to the select element
-    events.forEach((row, k) => {
-      //console.log("Populate", row["Event Display Name"], row["Session"], row["CampaignId"]);
-      //selectDOM.options[k] = new Option(row["Event Display Name"], row["CampaignId"]);       
-      
-      // creating div as container
-      let containerDiv = document.createElement('div');      
-      containerDiv.className = "form__session";
+    let topics = [];
+    let topicSessions = [];
 
+    // populate the events to the select element    
+    let newTopicIndex = 0
+    events.forEach((row, k) => {
+      
       // creating hidden input for EndDate
       let endDate = document.createElement('input');
       endDate.type = "hidden";
@@ -430,7 +428,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       checkbox.name = `sessions[]`;
       checkbox.className = `session-group`;
       checkbox.value = row["CampaignId"];
-      //checkbox.required = true;
+      //checkbox.required = true;      
 
       // creating label for checkbox
       let label = document.createElement('label');
@@ -439,28 +437,83 @@ document.addEventListener("DOMContentLoaded", function(event) {
        
       // appending the created text to the created label tag
       if (row["Max Signups"] == 0 || !row["CampaignId"]) {
-        label.appendChild(document.createTextNode(`${row["Event Display Name"]}（已額滿）`));        
+        label.appendChild(document.createTextNode(`${row["Session"]}（已額滿）`));        
       } else {
-        label.appendChild(document.createTextNode(`${row["Event Display Name"]}`));
+        label.appendChild(document.createTextNode(`${row["Session"]}`));
+      }             
+      
+      // for display
+      let topicBgColor = '#edf9d1';
+      if (newTopicIndex % 2) {
+        topicBgColor = '#ffffff';
       }
-       
-      // appending the checkbox and label to div
-      containerDiv.appendChild(checkbox);
-      containerDiv.appendChild(label);
-      containerDiv.appendChild(endDate);
+      if (topics.includes(row["Event Display Name"])) {
+        let topicIndex = topics.indexOf(row["Event Display Name"]);
 
-      sessionDOM.appendChild(containerDiv);
+        // add the non-first session
+        // get the container, and appending the checkbox and label to it     
+        let fullNameInput = document.createElement('input');
+        fullNameInput.type = 'hidden';        
+        fullNameInput.id = `fullName-session${k}`;
+        fullNameInput.value = `${row["Session"]} ${row["Event Display Name"]}`;
 
-      if (row["Max Signups"] == 0 || !row["CampaignId"]) {
-        //console.log('dummy:' +　row["Event Display Name"]);
+        let containerDiv = topicSessions[topicIndex];
+        //containerDiv.className = "form__session";
+        containerDiv.appendChild(checkbox);
+        containerDiv.appendChild(label);
+        containerDiv.appendChild(endDate);
+        containerDiv.appendChild(fullNameInput);
+        
+        sessionDOM.appendChild(containerDiv);
+
+      } else {
+        // add Event Display Name to topics[]
+        topics.push(row["Event Display Name"]);
+        newTopicIndex++;        
+
+        // creating label for this Event Display Name
+        // creating div as container
+        let topicDiv = document.createElement('div');      
+        topicDiv.className = "form__topic";
+        let topicLabel = document.createElement('label');        
+        topicLabel.appendChild(document.createTextNode(`${row["Event Display Name"]}`));
+        topicDiv.appendChild(topicLabel);                
+        topicDiv.style.backgroundColor = topicBgColor;
+
+        sessionDOM.appendChild(topicDiv);
+
+        // add the first session        
+        // creating div as container, and appending the checkbox and label to it        
+        let fullNameInput = document.createElement('input');
+        fullNameInput.type = 'hidden';        
+        fullNameInput.id = `fullName-session${k}`;
+        fullNameInput.value = `${row["Session"]} ${row["Event Display Name"]}`;
+
+        let containerDiv = document.createElement('div');      
+        containerDiv.className = "form__session";
+        containerDiv.appendChild(checkbox);
+        containerDiv.appendChild(label);
+        containerDiv.appendChild(endDate);
+        containerDiv.appendChild(fullNameInput);
+        containerDiv.style.backgroundColor = topicBgColor;                
+
+        // add containerDiv to topicSessions[]
+        topicSessions.push(containerDiv);
+
+        sessionDOM.appendChild(containerDiv);
+      }      
+
+      // disable the checkbox of full session
+      if (row["Max Signups"] == 0 || !row["CampaignId"]) {        
         document.getElementById(`session${k}`).disabled = true;
         label.className = "session-is-full";
       }
-      if (row["is-full"]) {
-        //sessionDOM.options[k].disabled = "disabled";
+      if (row["is-full"]) {        
         document.getElementById(`session${k}`).disabled = true;
         label.className = "session-is-full";
+        label.innerText += "（已額滿）";
       }
+
     })
   }
 
@@ -495,9 +548,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     });
 
   // step 1: fetch events from gsheet
-  // See dummy DB: https://docs.google.com/spreadsheets/d/1gy9ZeOYVlg0qJw538O7lUNL2bnZQVoZbZM_Mxv0k6ps/edit#gid=0
   // See howto use gsheet as DB
-  //fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vQpZSdeNknuotAvIrN7PDNs7syc-aC3or37P_-zh2j4a_InjD-hpRowj6oNEfzZSlv9lsthKy37x9pd/pub?gid=0&single=true&output=csv")
+  //fetch("https://docs.google.com/spreadsheets/u/0/d/1XsDBcedsKMY4yCpB3BGbnbQ7bmxlFkSVJiPy96-w4IQ/export?format=csv&id=1XsDBcedsKMY4yCpB3BGbnbQ7bmxlFkSVJiPy96-w4IQ&gid=0")
   fetch("https://docs.google.com/spreadsheets/u/0/d/1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ/export?format=csv&id=1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ&gid=0")
     .then(response => response.text())
     .then(response => csvJSON(response))
@@ -512,18 +564,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
     .then(response => {
       let campaignIds = response.map(row => row["CampaignId"])
       //console.log('campaignIds', campaignIds)
-      return fetch("https://cloud.greenhk.greenpeace.org/campaign-member-counts?campaignIds="+campaignIds.join(","))
+      return fetch("https://cloud.greentw.greenpeace.org/campaign-member-counts?campaignIds="+campaignIds.join(","))
     })
     .then(response => response.json())
     .then(response => {
-      //console.log('response', response)
+      console.log('response', response)
 
       //let rows = response.rows;
       let rows = response;
       
       rows.forEach(serverRow => {
         let campaignId = serverRow["Id"]
-
+        
         // find that campaign
         let idx = events.findIndex(e => e.CampaignId===campaignId);
         if (idx > -1) {
@@ -531,7 +583,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
           let targetSignups = parseInt(events[idx]["Max Signups"], 10);
           
           if (numRes >= targetSignups) {
-            events[idx]["Event Display Name"] += "（已額滿）";// += `(${numRes.toLocaleString()}/${targetSignups.toLocaleString()} 已額滿)`
+            //events[idx]["Event Display Name"] += "（已額滿）";// += `(${numRes.toLocaleString()}/${targetSignups.toLocaleString()} 已額滿)`
             events[idx]["is-full"] = true;
           }
           // } else {
