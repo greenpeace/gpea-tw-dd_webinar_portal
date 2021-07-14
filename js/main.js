@@ -3,8 +3,8 @@ $ = window.$ = window.jQuery = jquery;
 
 //var endpoint = 'https://cors-anywhere.small-service.gpeastasia.org/https://cloud.greentw.greenpeace.org/websign-dummy';
 var endpoint = 'https://cloud.greentw.greenpeace.org/websign';
-//var appScriptUrl = 'https://script.google.com/macros/s/AKfycbyOY2L8U8fAlFzCpKJgrB2Soez5FPIvUiTAEjwLT9py6cMtnoUU_x5KXAm7lhq46gPs/exec';//dummy
-var appScriptUrl = 'https://script.google.com/macros/s/AKfycby4PkwOUrOnd518wsRygcNFGWjLAsdtHavBx1YhmmN9Q417V_tcz6CZPMPW4SBAEhHN/exec';
+//var appScriptUrl = 'https://script.google.com/macros/s/AKfycbxv51TSdarVToqYywWgSjOpz0wy4ml1HYh4WkMgv5uNRHlVtzZikO0wJu5ZpVZ3bjPp/exec';//dummy
+var appScriptUrl = 'https://script.google.com/macros/s/AKfycbwl2OACweJFklrhOlWT_Do9n68b6DLWcpPBAYDEqGfab9nJqLUJmv7QRz9FoyGl5MFw/exec';
 var successful_list = [];
 var failed_list = [];
 
@@ -54,7 +54,7 @@ function submitPage(formData, checkedSessions, labelSessions, curr_ind) {
   formData.set('CampaignId', checkedSessions[curr_ind].value);
   formData.set('EndDate', document.querySelector(`#endDate${labelSessions[curr_ind]}`).value);  
   formData.set('Session', document.querySelector(`#fullName-session${labelSessions[curr_ind]}`).value);    
-  console.log(document.querySelector(`#fullName-session${labelSessions[curr_ind]}`).value);
+  //console.log(document.querySelector(`#fullName-session${labelSessions[curr_ind]}`).value);
 
   return fetch(endpoint, {
     method: 'POST',
@@ -75,7 +75,7 @@ function submitPage(formData, checkedSessions, labelSessions, curr_ind) {
 
         let sessionSize = document.querySelectorAll('input[name="sessions[]"]:checked').length - 1;             
         successful_list.push(document.getElementById(`fullName-session${labelSessions[curr_ind]}`).value);                    
-        regResult(curr_ind, sessionSize);
+        regResult(curr_ind, sessionSize);        
 
         fetch(appScriptUrl, {
           method: 'POST',
