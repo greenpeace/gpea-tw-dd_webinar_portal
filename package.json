@@ -1,12 +1,12 @@
 {
-  "name": "dd-followup-agreement",
+  "name": "DD-webinar-portal",
   "version": "0.0.1",
   "description": "",
   "keywords": "",
   "license": "",
   "author": "",
   "scripts": {
-    "build": "parcel build index.html --public-url https://change.greenpeace.org.tw/2021/webinar/DD-webinar/",
+    "build": "parcel build index.html --public-url https://change.greenpeace.org.tw/2021/webinar/DD-webinar-portal/",
     "dev": "parcel index.html --open --port 3000",
     "start": "npm run build && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"

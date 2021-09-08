@@ -25,7 +25,7 @@
 <body>  
   <div class="wrapper">
     <header>
-      <a href="http://www.greenpeace.org/taiwan/?ref=dd_webinar" title="Greenpeace" class="logo">
+      <a href="http://www.greenpeace.org/taiwan/?ref=dd_webinar_portal" title="Greenpeace" class="logo">
         <span class="visuallyhidden">Greenpeace</span>
       </a>
     </header>
@@ -54,17 +54,17 @@
             <label class="form__label">電子信箱<span>*</span></label>
             <input id="Email" name="Email" type="email" class="form__input email" placeholder="電子信箱"  required>
           </div>
-
+          <!--
           <div>
             <label class="form__label">性別<span>*</span></label>
             <input type="radio" id="gender__male" name="gender" value="male" checked required><label for="gender__male" class="gender__label">男</label>
             <input type="radio" id="gender__female" name="gender" value="female" required><label for="gender__female" class="gender__label">女</label>
             <input type="radio" id="gender__other" name="gender" value="other" required><label for="gender__other" class="gender__label">其他</label>
           </div>
-
+          -->
           <div>
-            <label class="form__label">電話（選填）</label>
-            <input id="MobilePhone" name="MobilePhone" class="form__input taiwan-phone" type="text" placeholder="電話">
+            <label class="form__label">電話<span>*</span></label>
+            <input id="MobilePhone" name="MobilePhone" class="form__input taiwan-phone" type="text" placeholder="電話" required>
           </div>
     
           <div>
@@ -77,15 +77,16 @@
           <div>
             <label class="form__label webinar__label">您的報名場次（可複選）<span>*</span></label>
             <div class="webinar-error error"></div>
-            <div class="webinar-sessions">              
-            </div>
+            <fieldset class="offline-sessions"></fieldset>
+            <fieldset class="webinar-sessions"></fieldset>
           </div>
                               
           <div class="form__OptIn">
+            <div id="OptIn-error" class="OptIn-error error"></div>
             <input id="OptIn" name="OptIn" type="checkbox" checked />
-            <label for="OptIn">
-              我願意收到綠色和平發送的電子通訊，掌握環保工作的最新消息！我並同意綠色和平按照其
-              <a href="https://www.greenpeace.org/taiwan/policies/privacy-and-cookies/?ref=dd_webinar"
+            <label for="OptIn"> <span style="color:Red;">*</span>
+              我願意收到綠色和平發送的講座報名確認信、電子通訊，掌握環保工作的最新消息！我並同意綠色和平按照其
+              <a href="https://www.greenpeace.org/taiwan/policies/privacy-and-cookies/?ref=dd_webinar_portal"
                 title="個人隱私政策" target="_blank">個人隱私政策</a>
               與我保持聯絡。
             </label>
@@ -112,15 +113,15 @@
     <footer>
         <div class="footer__up">
           <div class="footer__info">
-            <div class="footer__logo"><a herf="http://www.greenpeace.org/taiwan/?ref=dd_webinar"><img src="https://change.greenpeace.org.tw/others/gp-logo-white-2019.png?v=1" alt="綠色和平"></a></div>
+            <div class="footer__logo"><a herf="http://www.greenpeace.org/taiwan/?ref=dd_webinar_portal"><img src="https://change.greenpeace.org.tw/others/gp-logo-white-2019.png?v=1" alt="綠色和平"></a></div>
             <p>綠色和平存在，因為脆弱的地球需要改變、需要行動。<br />
             但保護地球的使命不能僅靠綠色和平來完成，唯有結合你的力量，才能夠讓地球變得更綠色、更和平。</p>          
           </div>
           <div class="footer__menu">
             <ul>
-              <!--<li><a href="http://www.greenpeace.org/taiwan/?ref=dd_webinar" target="_blank">主頁</a></li>
-              <li><a href="https://supporter.ea.greenpeace.org/tw/s/donate?ref=dd_webinar" target="_blank">捐助支持</a></li>	-->
-              <li><a href="https://www.greenpeace.org/taiwan/policies/privacy-and-cookies/?ref=dd_webinar" target="_blank">隱私政策與個人資料收集聲明</a></li>
+              <!--<li><a href="http://www.greenpeace.org/taiwan/?ref=dd_webinar_portal" target="_blank">主頁</a></li>
+              <li><a href="https://supporter.ea.greenpeace.org/tw/s/donate?ref=dd_webinar_portal" target="_blank">捐助支持</a></li>	-->
+              <li><a href="https://www.greenpeace.org/taiwan/policies/privacy-and-cookies/?ref=dd_webinar_portal" target="_blank">隱私政策與個人資料收集聲明</a></li>
             </ul>		
           </div>
         </div>
