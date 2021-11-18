@@ -2,14 +2,30 @@ const jquery = require('jquery');
 $ = window.$ = window.jQuery = jquery;
 
 //var endpoint = 'https://cloud.greentw.greenpeace.org/websign-dummy';
-//var endpoint = 'https://cors-anywhere.small-service.gpeastasia.org/https://cloud.greentw.greenpeace.org/websign-dummy';
-var endpoint = 'https://cloud.greentw.greenpeace.org/websign';
+var endpoint = 'https://cors-anywhere.small-service.gpeastasia.org/https://cloud.greentw.greenpeace.org/websign-dummy';
+//var endpoint = 'https://cloud.greentw.greenpeace.org/websign';
 //var apiUrl = 'https://script.google.com/macros/s/AKfycbxv51TSdarVToqYywWgSjOpz0wy4ml1HYh4WkMgv5uNRHlVtzZikO0wJu5ZpVZ3bjPp/exec';//dummy
 var apiUrl = '';
 var googleSheetUrl = '';
 var contentUrl = '';
 var successful_list = [];
 var failed_list = [];
+var icsString = `BEGIN:VCALENDAR
+PRODID:-//Greenpeace 綠色和平//Webinar Calendar 1.0//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-TIMEZONE:Asia/Taipei
+BEGIN:VTIMEZONE
+TZID:Asia/Taipei
+X-LIC-LOCATION:Asia/Taipei
+BEGIN:STANDARD
+TZOFFSETFROM:+0800
+TZOFFSETTO:+0800
+TZNAME:CST
+DTSTART:19700101T000000
+END:STANDARD
+END:VTIMEZONE`;
 
 /**
  * in regResult(), if all the registed sessions have returned from API
@@ -40,7 +56,13 @@ function regResult(curr_ind, sessionSize) {
       });                  
     }
 
-    $(".thank-you-div .content").html(result_str + $(".thank-you-div .content").html());
+    $(".thank-you-div .result").html(result_str);
+    $(".thank-you-div .content").html($(".thank-you-div .content").html());
+    let resultDiv = document.querySelector(".thank-you-div .result");
+    let icsBtn = document.querySelector(".downloadICS_btn");
+    resultDiv.insertBefore(icsBtn, resultDiv.lastElementChild.nextSibling)
+    //tyDiv.insertBefore(icsBtn, tyDiv.nextSibling);
+    //$(".downloadICS_btn").after($(".thank-you-div .content"));
     
     //showFullPageMessage(result_str, "#000", "#fff", true);
     $(".form-div").hide();                      
@@ -76,9 +98,33 @@ function submitPage(formData, checkedSessions, labelSessions, curr_ind) {
         //     'eventLabel': 'DD webinar'
         // });3
 
-        let sessionSize = document.querySelectorAll('input[name="sessions[]"]:checked').length - 1;             
-        successful_list.push(document.getElementById(`fullName-session${labelSessions[curr_ind]}`).value);                    
-        regResult(curr_ind, sessionSize);       
+        let sessionSize = document.querySelectorAll('input[name="sessions[]"]:checked').length - 1; 
+        let sessionName = document.getElementById(`fullName-session${labelSessions[curr_ind]}`).value;            
+        successful_list.push(sessionName);                    
+        regResult(curr_ind, sessionSize);
+
+        // add VEVENT of ics
+        let hour = new Date().getHours();//小時
+        if (hour < 10) hour = '0' + hour;
+        let minute = new Date().getMinutes();//分鐘
+        if (minute < 10) minute = '0' + minute;
+        let second = new Date().getSeconds();//秒
+        if (second < 10) second = '0' + second;
+        let DTSTAMP = new Date().toISOString().slice(0, 11).toString().replaceAll("-","") + hour + minute + second + 'Z';
+
+        let DTSTART = document.querySelector(`#DTSTART${labelSessions[curr_ind]}`).value.trim().replaceAll("-","").replaceAll(" ","T").replaceAll(":","") + "00Z";
+        let DTEND = document.querySelector(`#DTEND${labelSessions[curr_ind]}`).value.trim().replaceAll("-","").replaceAll(" ","T").replaceAll(":","") + "00Z";
+        let LOCATION = document.querySelector(`#LOCATION${labelSessions[curr_ind]}`).value;
+        let EMAIL = document.getElementById("Email").value;
+
+        const uid = () => {
+          return Date.now().toString(36) + Math.random().toString(36).substr(2) + "-" + EMAIL;
+        };
+        let uidVar = uid();
+        
+        icsString += `\nBEGIN:VEVENT\nDTSTART;TZID=Asia/Taipei:${DTSTART}\nDTEND;TZID=Asia/Taipei:${DTEND}\nDTSTAMP:${DTSTAMP}\nORGANIZER;CN=綠色和平:MAILTO:donor.services.tw@greenpeace.org\nUID:${uidVar}\nATTENDEE:mailto:${EMAIL}\nLOCATION:${LOCATION}\nSUMMARY:${sessionName}\nEND:VEVENT`;
+
+        console.log('icsString:', icsString);
 
         //console.log(formData);
         fetch(apiUrl, {
@@ -173,7 +219,7 @@ var collectFormValues = () => {
   })
 
   // add extra fields  
-  //dict['CampaignData1__c'] = document.querySelector('[name=gender]:checked').value;
+  dict['CampaignData1__c'] = document.querySelector('[name=gender]:checked').value;
   //dict['CampaignData2__c'] = sessions.join(',');  
   dict['CampaignData5__c'] = window.location.href;
 
@@ -290,6 +336,7 @@ let topLevelDomains = ["com", "net", "org"];
 let email = document.getElementById("Email");
 
 var Mailcheck = require('mailcheck');
+const babelConfig = require('../babel.config');
 email.onblur = function(){
   //console.log('blur');
 	if (!document.getElementById("email-suggestion")) {
@@ -390,11 +437,14 @@ const setTarget = () => {
 
   //set url of app script for sign-up log
   if (type === "donor") {
-    apiUrl = 'https://script.google.com/macros/s/AKfycbw-tVU4LaVVlq4OLYVcIgw6CTldyxNxlzKypAGfiwgNTROvITI3x_USGcVt09bj4-qUgA/exec';
+    //apiUrl = 'https://script.google.com/macros/s/AKfycbw-tVU4LaVVlq4OLYVcIgw6CTldyxNxlzKypAGfiwgNTROvITI3x_USGcVt09bj4-qUgA/exec';
+    apiUrl = 'https://script.google.com/macros/s/AKfycbyxbQQKNTQBVW9Gy1Jmp5NBEcTubzpsCYnRd9JHypXYcwuw3BBPcIo_6FJf8MdjJ6tQ-w/exec';
     contentUrl = 'https://docs.google.com/spreadsheets/u/0/d/1m4Ys7KGajCNjLXkZYK1Ct1EiI2hRyoX1vO35JGECh8Q/export?format=csv&id=1m4Ys7KGajCNjLXkZYK1Ct1EiI2hRyoX1vO35JGECh8Q&gid=1562944622';
     googleSheetUrl = 'https://docs.google.com/spreadsheets/u/0/d/1m4Ys7KGajCNjLXkZYK1Ct1EiI2hRyoX1vO35JGECh8Q/export?format=csv&id=1m4Ys7KGajCNjLXkZYK1Ct1EiI2hRyoX1vO35JGECh8Q&gid=0';
+    $('.gender__div').hide();
   } else if (type === "supporter") {
-    apiUrl = 'https://script.google.com/macros/s/AKfycbwl2OACweJFklrhOlWT_Do9n68b6DLWcpPBAYDEqGfab9nJqLUJmv7QRz9FoyGl5MFw/exec';
+    //apiUrl = 'https://script.google.com/macros/s/AKfycbwl2OACweJFklrhOlWT_Do9n68b6DLWcpPBAYDEqGfab9nJqLUJmv7QRz9FoyGl5MFw/exec';
+    apiUrl = 'https://script.google.com/macros/s/AKfycbw0Q-7Jsb_UZ0_AXiLEWtCYDyoNAj1cygBEoXhqX965bFLajFGC0UL7SUrGUAEjTqch/exec';
     contentUrl = 'https://docs.google.com/spreadsheets/u/0/d/1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ/export?format=csv&id=1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ&gid=1562944622';
     googleSheetUrl = 'https://docs.google.com/spreadsheets/u/0/d/1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ/export?format=csv&id=1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ&gid=0';
   } else if (type === "retention") {
@@ -402,6 +452,7 @@ const setTarget = () => {
     apiUrl = 'https://script.google.com/macros/s/AKfycbysg-72lpq29C1hMsaDniwiylOUKCuzUlRq8w5-kKli4ggI4_eYGHYdNOpI5vTorzR6/exec';
     contentUrl = 'https://docs.google.com/spreadsheets/u/0/d/1V0c57qqhw28IXHkODvN9apqOG359N1YZdrtH_7_BkEM/export?format=csv&id=1V0c57qqhw28IXHkODvN9apqOG359N1YZdrtH_7_BkEM&gid=1562944622';
     googleSheetUrl = 'https://docs.google.com/spreadsheets/u/0/d/1V0c57qqhw28IXHkODvN9apqOG359N1YZdrtH_7_BkEM/export?format=csv&id=1V0c57qqhw28IXHkODvN9apqOG359N1YZdrtH_7_BkEM&gid=0';
+    $('.gender__div').hide();
   } else {
     showFullPageMessage("請確認報名網址", "#fff", "#66cc00", false);
   }
@@ -425,43 +476,43 @@ const moniterScroll = () => {
     return elementBottom > viewportTop && elementTop < viewportBottom;
   };
 
-  let currentMonth = new Date().getMonth() + 1;
-  if (currentMonth > 12)
-    currentMonth = 1;
+//   let currentMonth = new Date().getMonth() + 1;
+//   if (currentMonth > 12)
+//     currentMonth = 1;
 
-  let nextMonth = currentMonth + 1;
-  if (nextMonth > 12)
-    nextMonth = 1;  
+//   let nextMonth = currentMonth + 1;
+//   if (nextMonth > 12)
+//     nextMonth = 1;  
   
-  $('#month-' + nextMonth).hide();
+//   $('#month-' + nextMonth).hide();
 
-  $(window).on('scroll', function() {
-    if ($('.' + currentMonth.toString()).length && $('.' + nextMonth.toString()).length
-        && $('#month-' + currentMonth).length && $('#month-' + nextMonth).length) {
-      if ($('.' + currentMonth.toString()).isInViewport()) {      
-        $('#month-' + currentMonth).fadeIn(1000);
-        $('#month-' + nextMonth).hide();
-        //console.log(currentMonth, ' in viewport');  
-        /*        
-        if ($('#month-' + currentMonth).prev().length
-          && $('#month-' + currentMonth).prev()[0].id== 'month-' + nextMonth) {          
-          $('#month-' + currentMonth).insertBefore('#month-' + nextMonth);                      
-        }      
-        $('#month-' + currentMonth).css('position', 'sticky');
-        $('#month-' + nextMonth).css('position', 'relative');*/
-      } else if ($('.' + nextMonth.toString()).isInViewport()) {  
-        $('#month-' + nextMonth).fadeIn(1000);
-        $('#month-' + currentMonth).hide();    
-        //console.log(nextMonth, ' in viewport');
-        /*
-        $('#month-' + nextMonth).insertBefore('#month-' + currentMonth);  
-        $('#month-' + nextMonth).css('position', 'sticky');
-        $('#month-' + currentMonth).css('position', 'relative');*/
-      } else {
-        //console.log('not in viewport');
-      } 
-    }        
-  });
+//   $(window).on('scroll', function() {
+//     if ($('.' + currentMonth.toString()).length && $('.' + nextMonth.toString()).length
+//         && $('#month-' + currentMonth).length && $('#month-' + nextMonth).length) {
+//       if ($('.' + currentMonth.toString()).isInViewport()) {      
+//         $('#month-' + currentMonth).fadeIn(1000);
+//         $('#month-' + nextMonth).hide();
+//         //console.log(currentMonth, ' in viewport');  
+//         /*        
+//         if ($('#month-' + currentMonth).prev().length
+//           && $('#month-' + currentMonth).prev()[0].id== 'month-' + nextMonth) {          
+//           $('#month-' + currentMonth).insertBefore('#month-' + nextMonth);                      
+//         }      
+//         $('#month-' + currentMonth).css('position', 'sticky');
+//         $('#month-' + nextMonth).css('position', 'relative');*/
+//       } else if ($('.' + nextMonth.toString()).isInViewport()) {  
+//         $('#month-' + nextMonth).fadeIn(1000);
+//         $('#month-' + currentMonth).hide();    
+//         //console.log(nextMonth, ' in viewport');
+//         /*
+//         $('#month-' + nextMonth).insertBefore('#month-' + currentMonth);  
+//         $('#month-' + nextMonth).css('position', 'sticky');
+//         $('#month-' + currentMonth).css('position', 'relative');*/
+//       } else {
+//         //console.log('not in viewport');
+//       } 
+//     }        
+//   });
 }
 
 /**
@@ -511,9 +562,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
     if ( !sessionDOM || !offlineDOM) {
       throw "Cannot find the webinar-sessions DOM."
     }
-
-    offlineDOM.innerHTML = '<legend>現場活動</legend>'; // clear loading content    
-    sessionDOM.innerHTML = '<legend>線上活動</legend>'; // clear loading content    
+    
+    //offlineDOM.innerHTML = `<legend class='offline'>高雄實體活動&nbsp;&nbsp;<a href='https://goo.gl/maps/W6cGJF1BbwZe3uA69' target='_blank'><img style='width:20px;' src='${babelConfig.publicPath}images/map.png'></a></legend>`; // clear loading content    
+    offlineDOM.innerHTML = `<legend class='offline'>高雄實體活動</legend><label class='offline-address'>高雄市三民區平等路45號1樓 <a href='https://goo.gl/maps/W6cGJF1BbwZe3uA69' target='_blank'><img style='width:20px;' src='https://change.greenpeace.org.tw/2021/webinar/DD-webinar-portal/images/road-map-fill-pngrepo-com.png'></a>（<a href='https://docs.google.com/document/d/1Hw9IG3I8LkVB1d9i_MvJ43BdKght5_gI82_uQaacZuc/edit?usp=sharing' target='_blank'>交通方式</a>）</label>`; // clear loading content
+    sessionDOM.innerHTML = `<legend class='online'>線上活動</legend>`; // clear loading content    
 
     let topics = [];
     let topicSessions = [];
@@ -530,7 +582,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
       let endDate = document.createElement('input');
       endDate.type = "hidden";
       endDate.id = `endDate${k}`;
-      endDate.value = row["From DateTime"].substr(0, 10).replace(/\//g, "-");
+      endDate.value = row["From DateTime"].substr(0, 10).trim().replace(/\//g, "-");
+
+      let DTSTART = document.createElement('input');
+      DTSTART.type = "hidden";
+      DTSTART.id = `DTSTART${k}`;
+      DTSTART.value = row["From DateTime"].trim().replace(/\//g, "-");
+
+      let DTEND = document.createElement('input');
+      DTEND.type = "hidden";
+      DTEND.id = `DTEND${k}`;
+      DTEND.value = endDate.value + " " + row["Session"].substr(row["Session"].indexOf('-') + 1).trim();
+ 
+      let LOCATION = document.createElement('input');
+      LOCATION.type = "hidden";
+      LOCATION.id = `LOCATION${k}`;      
+      if (row["Offline"] === "TRUE") {
+        LOCATION.value = "高雄市三民區平等路45號1樓";       
+      } else {
+        LOCATION.value = "ZOOM";
+      }
 
       // creating checkbox element
       let checkbox = document.createElement('input');
@@ -548,10 +619,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
       label.appendChild(document.createTextNode(`${row["Session"]}`));      
       
       // for display
-      let topicBgColor = '#edf9d1';
-      if (newTopicIndex % 2) {
-        topicBgColor = '#ffffff';
-      }
+      // let topicBgColor = '#edf9d1';
+      // if (newTopicIndex % 2) {
+      //   topicBgColor = '#ffffff';
+      // }
 
       if (topics.includes(row["Event Display Name"])) { //If the topic already exists, get it's index of topics[]
         let topicIndex = topics.indexOf(row["Event Display Name"]);        
@@ -568,6 +639,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
         sessionDiv.appendChild(checkbox);
         sessionDiv.appendChild(label);
         sessionDiv.appendChild(endDate);
+        sessionDiv.appendChild(DTSTART);
+        sessionDiv.appendChild(DTEND);
+        sessionDiv.appendChild(LOCATION);
         sessionDiv.appendChild(fullNameInput);
         sessionDiv.id = `container${topicIndex}`;     
         
@@ -581,10 +655,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
         let topicDiv = document.createElement('div');   
         let fromDT = new Date(row["From DateTime"]);          
         topicDiv.className = "form__topic " + (fromDT.getMonth() + 1).toString();
-        let topicLabel = document.createElement('label');        
-        topicLabel.appendChild(document.createTextNode(`${row["Event Display Name"]}`));
-        topicDiv.appendChild(topicLabel);                
-        topicDiv.style.backgroundColor = topicBgColor;
+        let topicLabel = document.createElement('div');        
+        //topicLabel.appendChild(document.createTextNode(`${row["Event Display Name"]}`));
+        topicLabel.innerHTML = `${row["Event Display Name"]}`;
+        topicLabel.className = "topic__session";
+        // let descLabel = document.createElement('label');                
+        // descLabel.innerHTML = `${row["Description"]}`;
+        // descLabel.className = "label__session";
+        topicDiv.appendChild(topicLabel);   
+        // topicDiv.appendChild(descLabel);              
+        //topicDiv.style.backgroundColor = topicBgColor;
         topicDiv.id = `topic${newTopicIndex}`;
 
         // add the first session        
@@ -599,15 +679,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
         sessionDiv.appendChild(checkbox);
         sessionDiv.appendChild(label);
         sessionDiv.appendChild(endDate);
+        sessionDiv.appendChild(DTSTART);
+        sessionDiv.appendChild(DTEND);
+        sessionDiv.appendChild(LOCATION);
         sessionDiv.appendChild(fullNameInput);
         sessionDiv.id = `container${newTopicIndex}`;
-        sessionDiv.style.backgroundColor = topicBgColor;    
+        //sessionDiv.style.backgroundColor = topicBgColor;    
         
         // creating a topic container, add topic / session into it, type of are div
         let topicContainerDiv = document.createElement('div');         
         topicContainerDiv.appendChild(topicDiv);
         topicContainerDiv.appendChild(sessionDiv);
         topicContainerDiv.id = `topicContainer${newTopicIndex}`;
+        topicContainerDiv.className = `topicContainer`;
+        //topicContainerDiv.style.backgroundColor = topicBgColor;
 
         // add sessionDiv to topicSessions[], typeOf is div
         topicSessions.push(sessionDiv);
@@ -666,12 +751,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
       for(var i=0;i<lines.length;i++){        
         var currentline=lines[i].split(",");        
-        //console.log(currentline[0]);
+        //console.log(currentline[0]);        
 
-        if (currentline[0].toLowerCase().indexOf("image") >= 0) {          
-          //document.getElementsByClassName("img-div")[0].style.backgroundImage = `url(${currentline[1].trim()})`;
-          //document.getElementsByClassName("img-div")[0].innerHTML = `<img src='${currentline[1].trim()}' style='width:100%;' />`;
-          document.getElementsByClassName("img-div")[0].innerHTML = currentline[1].trim();
+        if (currentline[0].toLowerCase().indexOf("image") >= 0) {
+          //document.getElementsByClassName("img-div")[0].style.backgroundImage = `url(${currentline[1].trim()})`;     
+          //let imgUrl = `https://cors-anywhere.small-service.gpeastasia.org/${currentline[1].trim()}`;
+          //let imgUrl = `${currentline[1].trim()}`;
+          //document.getElementsByClassName("img-div")[0].innerHTML = `<img src='${imgUrl}' style='width:100%;' id='main-img' />`;          
+          document.getElementsByClassName("img-div")[0].innerHTML = `${currentline[1].trim()}`;
         } else if (currentline[0].toLowerCase().indexOf("title") >= 0) { 
           document.title = currentline[1].trim() + "｜綠色和平";
           document.getElementsByClassName("title")[0].innerHTML = currentline[1].trim();
@@ -732,4 +819,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
     });
 
   formValidate();
+  //console.log('publicPath:', babelConfig.publicPath);
+
+  document.querySelector('.downloadICS_btn').onclick = function() {
+    icsString += `\nEND:VCALENDAR`;
+    window.open("data:text/calendar;charset=utf8," + encodeURIComponent(icsString));
+  };
 });

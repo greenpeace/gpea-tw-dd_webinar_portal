@@ -29,6 +29,7 @@
         <span class="visuallyhidden">Greenpeace</span>
       </a>
     </header>
+    <div>
     <main>
       <div class="img-div">
 
@@ -53,15 +54,13 @@
           <div>
             <label class="form__label">電子信箱<span>*</span></label>
             <input id="Email" name="Email" type="email" class="form__input email" placeholder="電子信箱"  required>
-          </div>
-          <!--
-          <div>
+          </div>          
+          <div class="gender__div">
             <label class="form__label">性別<span>*</span></label>
             <input type="radio" id="gender__male" name="gender" value="male" checked required><label for="gender__male" class="gender__label">男</label>
             <input type="radio" id="gender__female" name="gender" value="female" required><label for="gender__female" class="gender__label">女</label>
             <input type="radio" id="gender__other" name="gender" value="other" required><label for="gender__other" class="gender__label">其他</label>
-          </div>
-          -->
+          </div>          
           <div>
             <label class="form__label">電話<span>*</span></label>
             <input id="MobilePhone" name="MobilePhone" class="form__input taiwan-phone" type="text" placeholder="電話" required>
@@ -107,7 +106,11 @@
       </div> 
       <div class="thank-you-div">
         <h2 class="title"></h2>
+        <p class="result"></p>
         <p class="content"></p>
+        <div>
+          <button class="downloadICS_btn" >下載.ics檔，讓我匯入行事曆</button>          
+        </div>   
       </div>   
     </main>	
     <footer>

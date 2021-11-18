@@ -15,7 +15,7 @@
     color: #222;
     font-family: Noto Sans TC,PingFang HK,Helvetica Neue,Helvetica,Arial,sans-serif,Segoe UI,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;
     font-weight: 300;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.5;
   }
   
@@ -124,13 +124,13 @@
   }
   
   main .img-div {
-    width: 65%;
-    height: 100vh;    
+    width: 50%;
+    height: auto;
     background-position: 0% 100%;
     background-repeat: no-repeat;
     background-size: cover;    
     position: sticky;
-    top: 0;
+    top: 0;    
 
     background: #ffffff; /* Old browsers */
     background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 50%, #ededed 51%, #ffffff 100%); /* FF3.6-15 */
@@ -140,7 +140,7 @@
   }
   
   .form-div {    
-    width: 35%;
+    width: 50%;
     padding: 3rem;
     box-sizing: border-box;
   }
@@ -148,16 +148,17 @@
   .title {
     margin-block-start: 0;
     color: #66cc00;
+    font-size: 24px;
   }
 
   .form-div .content-bottom {
     margin-top: 40px;
   }
-  
+  /*
   form div {
     margin: 0 0 10px 0;
   }
-  
+  */
   .form__name {
     display: flex;
     flex-direction: row;
@@ -269,6 +270,20 @@
     word-break: keep-all;
   }
 
+  .topic__session {
+    font-weight: bolder;
+  }
+
+  .topicContainer {
+    padding: 10px 0;
+    border-bottom: 1px solid silver;
+  }
+
+  .label__session {
+    font-size: 100%;
+    color: #606266;    
+  }
+
   .form__topic {
     margin: 0;
     padding: 10px 10px 0 10px;
@@ -280,10 +295,18 @@
   }
 
   .thank-you-div {    
-    display: none;
-    width: 35%;
+    display: none;    
     padding: 3rem;
     box-sizing: border-box;
+  }
+
+  .thank-you-div .result {
+    padding: 1rem;
+    background-color: #E9FBFF;
+  }
+
+  .downloadICS_btn {
+    margin-top: 1rem;
   }
   /*
   .webinar-sessions {
@@ -313,23 +336,23 @@
   
   button {
     color:#fff; 
-    background-color: #67c23a;
-    border-color: #67c23a;
-    width:92px; 
+    background-color: #ff8100;
+    border-color: #ff8100;
+    min-width:100px; 
     height:46px; 
     border:none; 
-    border-radius:.25em;
+    border-radius:4px;
   }
   
   button:active {
-    background: #5daf34;
-    border-color: #5daf34;
+    background: #e96d00;
+    border-color: #e96d00;
     color: #fff;
   }
   
   button:hover {
-    background: #85ce61;
-    border-color: #85ce61;
+    background: #ffb660;
+    border-color: #ffb660;
     color: #fff;
   }
   
@@ -370,17 +393,49 @@
     padding: 0;    
     border-radius: 4px;
     border: 1px solid #dcdfe6;
+    position: relative;
   }
 
   legend {
-    font-weight: bold;
-    color: #66cc00;
-    padding: 0 15px;
+    font-weight: bold;    
+    padding: 5px 15px;
+    border-radius: 4px;
+    width: 130px;
   }
 
+  .tag {
+    font-size: 26px;
+    font-weight: bold;    
+    padding: 5px 15px;
+    border-radius: 4px;
+  }
+
+  .online {    
+    color: #fff;
+    background-color: #66cc00;
+    border-color: #66cc00;      
+  }
+
+  .offline {    
+    color: #fff;
+    background-color: #ff8100;
+    border-color: #ff8100;    
+  }
   .offline-sessions {
     margin: 0 0 15px 0;
   }  
+  .offline-address {
+    background-color: #292F47;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 4px;    
+    position: absolute;
+    top: -34px;
+    left: 140px;
+  }
+  .offline-address a {
+    color:#fff;
+  }
   
   /*
    * Allow only vertical resizing of textareas.
