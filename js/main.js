@@ -1,8 +1,8 @@
 const jquery = require('jquery');
 $ = window.$ = window.jQuery = jquery;
 
-//var endpoint = 'https://cloud.greentw.greenpeace.org/websign-dummy';
-var endpoint = 'https://cors-anywhere.small-service.gpeastasia.org/https://cloud.greentw.greenpeace.org/websign-dummy';
+var endpoint = 'https://cloud.greentw.greenpeace.org/websign-dummy';
+//var endpoint = 'https://cors-anywhere.small-service.gpeastasia.org/https://cloud.greentw.greenpeace.org/websign-dummy';
 //var endpoint = 'https://cloud.greentw.greenpeace.org/websign';
 //var apiUrl = 'https://script.google.com/macros/s/AKfycbxv51TSdarVToqYywWgSjOpz0wy4ml1HYh4WkMgv5uNRHlVtzZikO0wJu5ZpVZ3bjPp/exec';//dummy
 var apiUrl = '';
@@ -221,7 +221,7 @@ var collectFormValues = () => {
   // add extra fields  
   dict['CampaignData1__c'] = document.querySelector('[name=gender]:checked').value;
   //dict['CampaignData2__c'] = sessions.join(',');  
-  dict['CampaignData5__c'] = window.location.href;
+  dict['Completion_URL__c'] = window.location.href;
 
   // wrap into FormData
   var formData = new FormData();
@@ -298,6 +298,11 @@ const formValidate = () => {
     submitHandler: function() {
       showFullPageLoading();
 
+      if (!checkAdditionalForm()) {
+        hideFullPageLoading();
+        return;
+      }
+
       var formData = collectFormValues();              
       //console.log(formData);
       //var hasFailed = false
@@ -313,6 +318,61 @@ const formValidate = () => {
       runSerial(formData, checkedSessions, labelSessions, 0);            
     }
   });
+}
+
+/*
+ * checkAdditionalForm
+*/
+function checkAdditionalForm() {  
+  const additionalForms = document.querySelectorAll('.visible__additional__form');
+  let flag = true;
+  additionalForms.forEach(function(aForm){
+    
+    if(aForm.querySelector('#LastName').value.trim() == "") {
+      aForm.querySelector('.LastName__error').style.display = 'block';
+      flag = false;
+    }
+
+    if(aForm.querySelector('#FirstName').value.trim() == "") {      
+      aForm.querySelector('.FirstName__error').style.display = 'block';
+      flag = false;
+    }
+
+    if(aForm.querySelector('#Email').value.trim() == "") {
+      aForm.querySelector('.Email__error').style.display = 'block';
+      aForm.querySelector('.Email__error').innerHTML = '此欄必填';
+      flag = false;
+    } else {
+      flag = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/i.test(aForm.querySelector('#Email').value);
+      if (!flag) {
+        aForm.querySelector('.Email__error').innerHTML = '格式錯誤';
+        aForm.querySelector('.Email__error').style.display = 'block';
+      }
+    }
+
+    if(aForm.querySelector('#MobilePhone').value.trim() == "") {
+      aForm.querySelector('.MobilePhone__error').style.display = 'block';
+      aForm.querySelector('.MobilePhone__error').innerHTML = '此欄必填';
+      flag = false;
+    } else {
+      const phoneReg6 = new RegExp(/^(0|886|\+886)?(9\d{8})$/).test(aForm.querySelector('#MobilePhone').value);
+      const phoneReg7 = new RegExp(/^(0|886|\+886){1}[3-8]-?\d{6,8}$/).test(aForm.querySelector('#MobilePhone').value);
+      const phoneReg8 = new RegExp(/^(0|886|\+886){1}[2]-?\d{8}$/).test(aForm.querySelector('#MobilePhone').value);
+      flag = phoneReg6 || phoneReg7 || phoneReg8;
+      if (!flag) {
+        aForm.querySelector('.MobilePhone__error').innerHTML = '格式錯誤，請輸入格式 0912345678 或 02-12345678';
+        aForm.querySelector('.MobilePhone__error').style.display = 'block';
+      }
+    }
+
+    if(aForm.querySelector('#Birthdate').value.trim() == "") {      
+      aForm.querySelector('.Birthdate__error').style.display = 'block';
+      flag = false;
+    }
+  
+  });
+  
+  return flag;
 }
 
 /*
@@ -336,7 +396,6 @@ let topLevelDomains = ["com", "net", "org"];
 let email = document.getElementById("Email");
 
 var Mailcheck = require('mailcheck');
-const babelConfig = require('../babel.config');
 email.onblur = function(){
   //console.log('blur');
 	if (!document.getElementById("email-suggestion")) {
@@ -438,7 +497,7 @@ const setTarget = () => {
   //set url of app script for sign-up log
   if (type === "donor") {
     //apiUrl = 'https://script.google.com/macros/s/AKfycbw-tVU4LaVVlq4OLYVcIgw6CTldyxNxlzKypAGfiwgNTROvITI3x_USGcVt09bj4-qUgA/exec';
-    apiUrl = 'https://script.google.com/macros/s/AKfycbyxbQQKNTQBVW9Gy1Jmp5NBEcTubzpsCYnRd9JHypXYcwuw3BBPcIo_6FJf8MdjJ6tQ-w/exec';
+    apiUrl = 'https://script.google.com/macros/s/AKfycbw0JJqLb8SIwxLdQXeMBLoV46_wEz2joGjtnlVFli45ANtAJAIJ1ieRp4KBKg8ykmtGcA/exec';
     contentUrl = 'https://docs.google.com/spreadsheets/u/0/d/1m4Ys7KGajCNjLXkZYK1Ct1EiI2hRyoX1vO35JGECh8Q/export?format=csv&id=1m4Ys7KGajCNjLXkZYK1Ct1EiI2hRyoX1vO35JGECh8Q&gid=1562944622';
     googleSheetUrl = 'https://docs.google.com/spreadsheets/u/0/d/1m4Ys7KGajCNjLXkZYK1Ct1EiI2hRyoX1vO35JGECh8Q/export?format=csv&id=1m4Ys7KGajCNjLXkZYK1Ct1EiI2hRyoX1vO35JGECh8Q&gid=0';
     $('.gender__div').hide();
@@ -564,7 +623,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
     
     //offlineDOM.innerHTML = `<legend class='offline'>高雄實體活動&nbsp;&nbsp;<a href='https://goo.gl/maps/W6cGJF1BbwZe3uA69' target='_blank'><img style='width:20px;' src='${babelConfig.publicPath}images/map.png'></a></legend>`; // clear loading content    
-    offlineDOM.innerHTML = `<legend class='offline'>高雄實體活動</legend><label class='offline-address'>高雄市三民區平等路45號1樓 <a href='https://goo.gl/maps/W6cGJF1BbwZe3uA69' target='_blank'><img style='width:20px;' src='https://change.greenpeace.org.tw/2021/webinar/DD-webinar-portal/images/road-map-fill-pngrepo-com.png'></a>（<a href='https://docs.google.com/document/d/1Hw9IG3I8LkVB1d9i_MvJ43BdKght5_gI82_uQaacZuc/edit?usp=sharing' target='_blank'>交通方式</a>）</label>`; // clear loading content
+    offlineDOM.innerHTML = `<legend class='offline'>高雄實體活動</legend><label class='offline-address'>高雄市三民區平等路45號1樓 <a href='https://goo.gl/maps/W6cGJF1BbwZe3uA69' target='_blank'><img style='width:20px;' src='https://change.greenpeace.org.tw/2021/webinar/DD-webinar-portal/images/road-map-fill-pngrepo-com.png'></a>（<a href='https://docs.google.com/document/d/1Hw9IG3I8LkVB1d9i_MvJ43BdKght5_gI82_uQaacZuc/edit?usp=sharing' target='_blank'>交通方式</a>）</label><div style='color:red; position:relative;'>【實體活動空間有限，每場名額上限為28人，每人最多僅能攜伴一位親友參加】</div>`; // clear loading content
     sessionDOM.innerHTML = `<legend class='online'>線上活動</legend>`; // clear loading content    
 
     let topics = [];
@@ -659,11 +718,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
         //topicLabel.appendChild(document.createTextNode(`${row["Event Display Name"]}`));
         topicLabel.innerHTML = `${row["Event Display Name"]}`;
         topicLabel.className = "topic__session";
-        // let descLabel = document.createElement('label');                
-        // descLabel.innerHTML = `${row["Description"]}`;
-        // descLabel.className = "label__session";
+        let descLabel = document.createElement('div');                
+        //descLabel.innerHTML = `${row["Description"]}`;
+        descLabel.className = "label__session";
+        descLabel.id = `desc${newTopicIndex}`;                
+        if (row["Description"] != "undefined" && row["Description"].trim() != "") {                 
+          //fetch('https://change.greenpeace.org.tw/2021/webinar/DD-webinar-donor/files/12_04-desc.html')
+          fetch(`${row["Description"]}`)
+            .then(response => response.text())
+            .then(data => {          
+              //console.log(data);
+              document.querySelector('#' + descLabel.id).innerHTML = data;
+          });
+        }        
         topicDiv.appendChild(topicLabel);   
-        // topicDiv.appendChild(descLabel);              
+        topicDiv.appendChild(descLabel);              
         //topicDiv.style.backgroundColor = topicBgColor;
         topicDiv.id = `topic${newTopicIndex}`;
 
@@ -733,7 +802,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       }
     });
 
-    if (document.querySelector(".offline-sessions").childElementCount === 1) {
+    if (document.querySelector(".offline-sessions").childElementCount === 3) {
       document.querySelector(".offline-sessions").style.display = "none";
     }
     if (document.querySelector(".webinar-sessions").childElementCount === 1) {
@@ -825,4 +894,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
     icsString += `\nEND:VCALENDAR`;
     window.open("data:text/calendar;charset=utf8," + encodeURIComponent(icsString));
   };
+
+
+  // document.querySelector('.additional_btn').onclick = function() {
+  //   let cln = document.querySelector('.additional__form').cloneNode(true);
+  //   cln.style.display = 'block';
+  //   cln.classList.add("visible__additional__form");
+  //   const additional_btn = cln.querySelector('.close__additional__form');
+  //   additional_btn.addEventListener('click', function() {      
+  //     additional_btn.parentElement.parentElement.style.display = 'none';     
+  //   });
+  //   document.querySelector('.additional__form_groups').appendChild(cln);    
+  // };
+
 });

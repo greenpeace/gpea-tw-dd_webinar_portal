@@ -272,6 +272,7 @@
 
   .topic__session {
     font-weight: bolder;
+    color: #66cc00;
   }
 
   .topicContainer {
@@ -298,6 +299,7 @@
     display: none;    
     padding: 3rem;
     box-sizing: border-box;
+    width: 50%;
   }
 
   .thank-you-div .result {
@@ -307,12 +309,27 @@
 
   .downloadICS_btn {
     margin-top: 1rem;
+    display: none;
   }
   /*
   .webinar-sessions {
     max-height: 200px;
     overflow-y: auto;
   }*/
+
+  .greenTag { 
+    background: #66cc00;
+    color:#ffffff !important;
+    border-radius:4px;
+    padding:2px 3px;
+  }
+  
+  .yellowTag {
+    background:#FFE66F;
+    color:#977C00;
+    border-radius:4px;
+    padding:2px 3px;
+  } 
 
   /*
    * Remove text-shadow in selection highlight:
@@ -400,7 +417,7 @@
     font-weight: bold;    
     padding: 5px 15px;
     border-radius: 4px;
-    width: 130px;
+    width: 135px;
   }
 
   .tag {
@@ -429,12 +446,54 @@
     color: #fff;
     padding: 5px 15px;
     border-radius: 4px;    
-    position: absolute;
+    position: relative;
     top: -34px;
     left: 140px;
+    width: 50%;
+    display: inline-block;
   }
   .offline-address a {
     color:#fff;
+  }
+
+  .additional__div {
+    margin: 20px 0;
+  }
+
+  .additional__form {
+    background-color: #E4FDE1;
+    padding: 10px;
+    margin-top: 10px;
+    display: none;
+  }
+
+  .visible__additional__form {
+    display: block;
+  }
+
+  .additional__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .additional_btn {
+    width:100px; 
+    height:46px; 
+    border:none; 
+    border-radius:4px;
+    
+    padding: 10px;
+    background-color: #66cc00;
+    color: #ffffff;
+  }
+
+  .additional_btn:hover {
+    background-color: #c2f490;
+  }
+
+  .additional__error {
+    color: red;
+    display: none;
   }
   
   /*

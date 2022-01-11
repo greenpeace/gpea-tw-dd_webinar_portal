@@ -5,19 +5,27 @@
   "keywords": "",
   "license": "",
   "author": "",
-  "scripts": {    
-    "build": "parcel build index.html --public-url https://change.greenpeace.org.tw/2021/petition-test/webinar-test",
+  "scripts": {
+    "preinstall": "npx npm-force-resolutions",
+    "build": "parcel build index.html --public-url https://change.greenpeace.org.tw/2021/webinar/DD-webinar-portal",
     "dev": "parcel index.html --open --port 3000",
-    "start": "npm run build && npm run dev",
+    "start": "yarn parcel index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.4"
+    "@parcel/transformer-webmanifest": "^2.0.1",
+    "cssnano": "^4.1.11",
+    "parcel": "^2.0.1",
+    "parcel-bundler": "^1.12.3",
+    "postcss": "^8.2.15"
   },
   "dependencies": {
     "jquery": "^3.6.0",
     "jquery-validation": "^1.19.3",
     "lightbox2": "^2.11.3",
     "mailcheck": "^1.1.1"
+  },
+  "resolutions": {
+    "@babel/preset-env": "7.13.8"
   }
 }
