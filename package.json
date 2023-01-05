@@ -7,7 +7,7 @@
   "author": "",
   "scripts": {
     "preinstall": "npx npm-force-resolutions",
-    "build": "parcel build index.html --public-url https://change.greenpeace.org.tw/2021/webinar/DD-webinar-portal",
+    "build": "parcel build index.html --public-url https://change.greenpeace.org.tw/2023/event/DDC-event",
     "dev": "parcel index.html --open --port 3000",
     "start": "yarn parcel index.html",
     "test": "echo \"Error: no test specified\" && exit 1"

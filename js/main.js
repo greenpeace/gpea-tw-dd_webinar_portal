@@ -622,8 +622,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
       throw "Cannot find the webinar-sessions DOM."
     }
     
-    //offlineDOM.innerHTML = `<legend class='offline'>高雄實體活動&nbsp;&nbsp;<a href='https://goo.gl/maps/W6cGJF1BbwZe3uA69' target='_blank'><img style='width:20px;' src='${babelConfig.publicPath}images/map.png'></a></legend>`; // clear loading content    
-    offlineDOM.innerHTML = `<legend class='offline'>高雄實體活動</legend><label class='offline-address'>高雄市三民區平等路45號1樓 <a href='https://goo.gl/maps/W6cGJF1BbwZe3uA69' target='_blank'><img style='width:20px;' src='https://change.greenpeace.org.tw/2021/webinar/DD-webinar-portal/images/road-map-fill-pngrepo-com.png'></a>（<a href='https://docs.google.com/document/d/1Hw9IG3I8LkVB1d9i_MvJ43BdKght5_gI82_uQaacZuc/edit?usp=sharing' target='_blank'>交通方式</a>）</label><div style='color:red; position:relative;'>【實體活動空間有限，每場名額上限為28人，每人最多僅能攜伴一位親友參加】</div>`; // clear loading content
+    //offlineDOM.innerHTML = `<legend class='offline'>高雄實體活動</legend><label class='offline-address'>高雄市三民區平等路45號1樓 <a href='https://goo.gl/maps/W6cGJF1BbwZe3uA69' target='_blank'><img style='width:20px;' src='https://change.greenpeace.org.tw/2021/webinar/DD-webinar-portal/images/road-map-fill-pngrepo-com.png'></a>（<a href='https://docs.google.com/document/d/1Hw9IG3I8LkVB1d9i_MvJ43BdKght5_gI82_uQaacZuc/edit?usp=sharing' target='_blank'>交通方式</a>）</label><div style='color:red; position:relative;'>【實體活動空間有限，每場名額上限為28人，每人最多僅能攜伴一位親友參加】</div>`; // clear loading content
+    offlineDOM.innerHTML = `<legend class='offline'>實體活動</legend><div style='color:red; position:relative;'></div>`; // clear loading content
     sessionDOM.innerHTML = `<legend class='online'>線上活動</legend>`; // clear loading content    
 
     let topics = [];
@@ -657,7 +657,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
       LOCATION.type = "hidden";
       LOCATION.id = `LOCATION${k}`;      
       if (row["Offline"] === "TRUE") {
-        LOCATION.value = "高雄市三民區平等路45號1樓";       
+        LOCATION.value = "綠色和平臺北辦公室";       
       } else {
         LOCATION.value = "ZOOM";
       }
