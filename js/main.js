@@ -1,9 +1,9 @@
 const jquery = require('jquery');
 $ = window.$ = window.jQuery = jquery;
 
-var endpoint = 'https://cloud.greentw.greenpeace.org/websign-dummy';
+//var endpoint = 'https://cloud.greentw.greenpeace.org/websign-dummy';
 //var endpoint = 'https://cors-anywhere.small-service.gpeastasia.org/https://cloud.greentw.greenpeace.org/websign-dummy';
-//var endpoint = 'https://cloud.greentw.greenpeace.org/websign';
+var endpoint = 'https://cloud.greentw.greenpeace.org/websign';
 //var apiUrl = 'https://script.google.com/macros/s/AKfycbxv51TSdarVToqYywWgSjOpz0wy4ml1HYh4WkMgv5uNRHlVtzZikO0wJu5ZpVZ3bjPp/exec';//dummy
 var apiUrl = '';
 var googleSheetUrl = '';
@@ -503,7 +503,7 @@ const setTarget = () => {
     $('.gender__div').hide();
   } else if (type === "supporter") {
     //apiUrl = 'https://script.google.com/macros/s/AKfycbwl2OACweJFklrhOlWT_Do9n68b6DLWcpPBAYDEqGfab9nJqLUJmv7QRz9FoyGl5MFw/exec';
-    apiUrl = 'https://script.google.com/macros/s/AKfycbw0Q-7Jsb_UZ0_AXiLEWtCYDyoNAj1cygBEoXhqX965bFLajFGC0UL7SUrGUAEjTqch/exec';
+    apiUrl = 'https://script.google.com/macros/s/AKfycbw0Q-7Jsb_UZ0_AXiLEWtCYDyoNAj1cygBEoXhqX965bFLajFGC0UL7SUrGUAEjTqch/exec';    
     contentUrl = 'https://docs.google.com/spreadsheets/u/0/d/1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ/export?format=csv&id=1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ&gid=1562944622';
     googleSheetUrl = 'https://docs.google.com/spreadsheets/u/0/d/1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ/export?format=csv&id=1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ&gid=0';
   } else if (type === "retention") {
