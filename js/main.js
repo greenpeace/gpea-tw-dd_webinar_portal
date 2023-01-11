@@ -503,7 +503,7 @@ const setTarget = () => {
     $('.gender__div').hide();
   } else if (type === "supporter") {
     //apiUrl = 'https://script.google.com/macros/s/AKfycbwl2OACweJFklrhOlWT_Do9n68b6DLWcpPBAYDEqGfab9nJqLUJmv7QRz9FoyGl5MFw/exec';
-    apiUrl = 'https://script.google.com/macros/s/AKfycbw0Q-7Jsb_UZ0_AXiLEWtCYDyoNAj1cygBEoXhqX965bFLajFGC0UL7SUrGUAEjTqch/exec';    
+    apiUrl = 'https://script.google.com/macros/s/AKfycbwnJzTYrGz9rVq9TwQbddGBVdRkuOWlt7JdSmFrv7WR-QeLGwsELlkIUFiwCwrDDn6D/exec';    
     contentUrl = 'https://docs.google.com/spreadsheets/u/0/d/1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ/export?format=csv&id=1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ&gid=1562944622';
     googleSheetUrl = 'https://docs.google.com/spreadsheets/u/0/d/1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ/export?format=csv&id=1zf00KMnjfJY9lHou15jHREaRD9PBK6AgjNialKNkzGQ&gid=0';
   } else if (type === "retention") {
